@@ -1,4 +1,4 @@
-document_dict = {
+document_extensions = {
     "DOC": ".doc",
     "DOCX": ".docx",
     "HTML": ".html",

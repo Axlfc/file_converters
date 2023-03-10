@@ -1,4 +1,4 @@
-ebook_dict = {
+ebook_extensions = {
     "AZW": ".azw",
     "ePub": ".epub",
     "FB2": ".fb2",

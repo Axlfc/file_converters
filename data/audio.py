@@ -1,4 +1,4 @@
-audio_dict = {
+audio_extensions = {
     "WAV": ".wav",
     "MP3": ".mp3",
     "AIFF": ".aiff",
