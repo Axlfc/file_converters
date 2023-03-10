@@ -1,0 +1,1 @@
+hash_formats = ["Adler32", "htpasswd Apache", "Blowfish", "CRC-32", "CRC-32B", "DES", "Gost", "Haval-128", "MD4", "MD5", "RIPEMD-128", "RIPEMD-160", "SHA-1", "SHA-256", "SHA-384", "SHA-512", "Snefru", "Tiger-128", "Tiger-160", "Tiger-192", "Whirlpool"]
