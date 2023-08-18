@@ -7,9 +7,11 @@ from data.audio import audio_extensions
 class WavToMp3ConverterApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("File Converter")
+        self.root.title("Audio File Converter")
 
         self.file_name = ""  # Initialize an empty file name
+
+        self.previous_extension = "wav"
 
         self.file_extension_var = tk.StringVar(value="wav")  # Default to wav extension
         self.file_extension_label = tk.Label(root, text="Select File Extension:")
@@ -73,11 +75,15 @@ class WavToMp3ConverterApp:
         self.convert_button = tk.Button(root, text="Convert", command=self.convert_wav)
         self.convert_button.pack()
 
-
     def update_labels(self, *args):
         mode = self.mode_var.get()
         extension = self.file_extension_var.get()
         exclude = self.exclude_var.get().upper()
+
+        if extension != self.previous_extension:  # Check if extension has changed
+            self.input_path_entry.delete(0, tk.END)  # Clear the input path entry
+
+        self.previous_extension = extension  # Update the previous_extension
 
         if mode == "single":
             print("SINGLE EXCLUDE:", exclude)
@@ -126,9 +132,14 @@ class WavToMp3ConverterApp:
                 if mode == "single":
                     if not output_path:
                         output_path = os.path.splitext(input_path)[0] + f".{self.exclude_var.get()}"
+                    elif os.path.isdir(output_path):
+                        output_path = os.path.join(output_path, os.path.splitext(os.path.basename(input_path))[
+                            0] + f".{self.exclude_var.get()}")
 
                     print("THE OUTPUT PATH:", output_path)
-                    print("THE EXTENSION:", extension)
+                    print("THE OUTPUT NAME:", input_path)
+                    print("THE OUTPUT EXTENSION:", self.exclude_var.get())
+
                     self.convert_to_mp3(input_path, output_path)
                     messagebox.showinfo("Conversion Complete", "Conversion successful!")
                 elif mode == "batch":
