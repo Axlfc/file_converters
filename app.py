@@ -145,8 +145,13 @@ class WavToMp3ConverterApp:
                 elif mode == "batch":
                     if not output_path:
                         output_path = os.path.join(input_path, "converted_mp3")
+                    elif os.path.splitext(output_path)[1]:
+                        messagebox.showerror("Error", "For batch conversion, output path cannot have a file extension. Please provide a directory path.")
+                        return
+
                     if not os.path.exists(output_path):
                         os.makedirs(output_path)
+
                     for root, dirs, files in os.walk(input_path):
                         for file in files:
                             if file.lower().endswith(f".{extension}"):
