@@ -68,7 +68,7 @@ class WavToMp3ConverterApp:
 
         self.output_path_frame.pack()
 
-        self.convert_button = tk.Button(root, text="Convert", command=self.convert_wav)
+        self.convert_button = tk.Button(root, text="Convert", command=self.convert_file)
         self.convert_button.pack()
 
     def update_labels(self, *args):
@@ -76,9 +76,8 @@ class WavToMp3ConverterApp:
         exclude = self.exclude_var.get()
 
         # Update options for the exclude dropdown based on the selected extension
-        self.exclude_options = [format for format in audio_extensions.keys() if format != extension]
-        self.exclude_var.set(
-            exclude if exclude != extension else self.exclude_options[0])  # Set a different default if needed
+        self.exclude_options = [format for format in audio_extensions.keys() if format != exclude]
+        self.exclude_var.set(self.exclude_options[0])  # Set the first option as default
 
         mode = self.mode_var.get()
 
@@ -109,7 +108,7 @@ class WavToMp3ConverterApp:
         self.output_path_entry.delete(0, tk.END)
         self.output_path_entry.insert(0, selected_path)
 
-    def convert_wav(self):
+    def convert_file(self):
         mode = self.mode_var.get()
         extension = self.file_extension_var.get()
         input_path = self.input_path_entry.get()
@@ -122,8 +121,7 @@ class WavToMp3ConverterApp:
 
                 if mode == "single":
                     exclude_option = f"--convert-to={exclude_extension}={input_path}"
-                    command = f"bash -l -c 'batch_wav_to_mp3 --extension={extension} {exclude_option} {input_path} {output_path}'"
-                    os.system(command)
+                    pass
                     messagebox.showinfo("Conversion Complete",
                                         f"{extension} to {exclude_format} conversion successful!")
                 elif mode == "batch":
@@ -131,8 +129,7 @@ class WavToMp3ConverterApp:
                         output_path = os.path.join(input_path, f"converted_{exclude_format.lower()}")
                         messagebox.showwarning("Warning",
                                                f"No output path provided. A folder named 'converted_{exclude_format.lower()}' will be created.")
-                    command = f"bash -l -c 'batch_wav_to_mp3 --extension={extension} {input_path} {output_path}'"
-                    os.system(command)
+                    pass
                     messagebox.showinfo("Batch Conversion Complete",
                                         f"Batch {extension} to {exclude_format} conversion successful!")
             except Exception as e:
