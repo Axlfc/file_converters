@@ -9,11 +9,15 @@ class WavToMp3ConverterApp:
         self.root = root
         self.root.title("File Converter")
 
+        self.file_name = ""  # Initialize an empty file name
+
         self.file_extension_var = tk.StringVar(value="wav")  # Default to wav extension
         self.file_extension_label = tk.Label(root, text="Select File Extension:")
         self.file_extension_label.pack()
 
-        self.file_extension_dropdown = tk.OptionMenu(root, self.file_extension_var, "wav", "mp3", "ogg", "aac", command=self.update_labels)
+        self.file_extension_dropdown = tk.OptionMenu(
+            root, self.file_extension_var, *audio_extensions, command=self.update_labels
+        )
         self.file_extension_dropdown.pack()
 
         self.mode_var = tk.StringVar(value="single")  # Default to single mode
@@ -44,11 +48,11 @@ class WavToMp3ConverterApp:
         self.input_path_frame.pack()
 
         self.exclude_var = tk.StringVar(value="mp3")
-        self.exclude_label = tk.Label(root, text=f"Convert to:")
+        self.exclude_label = tk.Label(root, text=f"Convert to MP3:")
         self.exclude_label.pack()
 
-        self.exclude_options = ["mp3", "wav", "ogg", "aac"]  # Initial options for the exclude dropdown
-        self.exclude_dropdown = tk.OptionMenu(root, self.exclude_var, *self.exclude_options)
+        self.exclude_options = audio_extensions.keys()
+        self.exclude_dropdown = tk.OptionMenu(root, self.exclude_var, *self.exclude_options, command=self.update_labels)
         self.exclude_dropdown.pack()
 
         self.output_label_text = tk.StringVar()
@@ -69,16 +73,19 @@ class WavToMp3ConverterApp:
         self.convert_button = tk.Button(root, text="Convert", command=self.convert_wav)
         self.convert_button.pack()
 
+
     def update_labels(self, *args):
         mode = self.mode_var.get()
         extension = self.file_extension_var.get()
         exclude = self.exclude_var.get().upper()
 
         if mode == "single":
+            print("SINGLE EXCLUDE:", exclude)
             self.input_label_text.set(f"Input {extension.upper()} File:")
-            self.output_label_text.set(f"Output {exclude} File:")
+            self.output_label_text.set(f"Output {exclude} File/Folder:")
             self.exclude_label.config(text=f"Convert to {exclude}:")
         else:
+            print("BATCH EXCLUDE:", exclude)
             self.input_label_text.set("Input Folder:")
             self.output_label_text.set("Output Folder:")
             self.exclude_label.config(text=f"Convert to {exclude}:")
@@ -100,6 +107,10 @@ class WavToMp3ConverterApp:
         self.output_path_entry.delete(0, tk.END)
         self.output_path_entry.insert(0, selected_path)
 
+    def convert_to_mp3(self, input_path, output_path):
+        # Convert audio to MP3 using FFmpeg
+        os.system(f'ffmpeg -y -i "{input_path}" "{output_path}"')
+
     def convert_wav(self):
         mode = self.mode_var.get()
         extension = self.file_extension_var.get()
@@ -109,17 +120,26 @@ class WavToMp3ConverterApp:
         if input_path:
             try:
                 if mode == "single":
-                    exclude_option = f"--convert-to={self.exclude_var.get()}={input_path}"
-                    command = f"bash -l -c 'batch_wav_to_mp3 --extension={extension} {exclude_option} {input_path} {output_path}'"
-                    os.system(command)
-                    messagebox.showinfo("Conversion Complete", "WAV to MP3 conversion successful!")
+                    if not output_path:
+                        output_path = os.path.splitext(input_path)[0] + f".{self.exclude_var.get()}"
+
+                    print("THE OUTPUT PATH:", output_path)
+                    print("THE EXTENSION:", extension)
+                    self.convert_to_mp3(input_path, output_path)
+                    messagebox.showinfo("Conversion Complete", "Conversion successful!")
                 elif mode == "batch":
                     if not output_path:
                         output_path = os.path.join(input_path, "converted_mp3")
-                        messagebox.showwarning("Warning", "No output path provided. A folder named 'converted_mp3' will be created.")
-                    command = f"bash -l -c 'batch_wav_to_mp3 --extension={extension} {input_path} {output_path}'"
-                    os.system(command)
-                    messagebox.showinfo("Batch Conversion Complete", "Batch WAV to MP3 conversion successful!")
+                    if not os.path.exists(output_path):
+                        os.makedirs(output_path)
+                    for root, dirs, files in os.walk(input_path):
+                        for file in files:
+                            if file.lower().endswith(f".{extension}"):
+                                input_file_path = os.path.join(root, file)
+                                output_file_path = os.path.join(output_path, file)
+                                output_file_path = os.path.splitext(output_file_path)[0] + f".{self.exclude_var.get()}"
+                                self.convert_to_mp3(input_file_path, output_file_path)
+                    messagebox.showinfo("Batch Conversion Complete", "Batch conversion successful!")
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
         else:
@@ -130,3 +150,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = WavToMp3ConverterApp(root)
     root.mainloop()
+

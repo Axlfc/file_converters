@@ -25,8 +25,23 @@ def all_mp3_to_wav():
     }
     '''
 
-
 audio_extensions = {
+    "aac": ".aac",
+    "aax": ".aax",
+    "aiff": ".aiff",
+    "alac": ".alac",
+    "flac": ".flac",
+    "m4a": ".m4a",
+    "mp3": ".mp3",
+    "ogg": ".ogg",
+    "opus": ".opus",
+    "wav": ".wav",
+    "wma": ".wma",
+    "mpc": ".mpc"
+}
+
+
+all_audio_extensions = {
     "WAV": ".wav",
     "MP3": ".mp3",
     "AIFF": ".aiff",
