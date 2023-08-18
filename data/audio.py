@@ -27,9 +27,7 @@ def all_mp3_to_wav():
 
 audio_extensions = {
     "aac": ".aac",
-    "aax": ".aax",
     "aiff": ".aiff",
-    "alac": ".alac",
     "flac": ".flac",
     "m4a": ".m4a",
     "mp3": ".mp3",
@@ -37,7 +35,6 @@ audio_extensions = {
     "opus": ".opus",
     "wav": ".wav",
     "wma": ".wma",
-    "mpc": ".mpc"
 }
 
 

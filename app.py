@@ -119,6 +119,10 @@ class WavToMp3ConverterApp:
 
         if input_path:
             try:
+                if extension == self.exclude_var.get():
+                    messagebox.showerror("Error", "Input and output file extensions cannot be the same.")
+                    return
+
                 if mode == "single":
                     if not output_path:
                         output_path = os.path.splitext(input_path)[0] + f".{self.exclude_var.get()}"
