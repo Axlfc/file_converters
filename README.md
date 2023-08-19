@@ -49,7 +49,7 @@ choco install ffmpeg
 ```
 ### Using Binaries <a name="using-binaries"></a>
 
-- Visit the [FFmpeg Download page](https://ffmpeg.org/download.html#build-windows) and download the suitable static build for Windows.
+- Visit the [FFmpeg Download page](https://ffmpeg.org/download.html) and download the suitable static build for Windows.
 - Extract the downloaded archive.
 - Rename the extracted folder to "ffmpeg" for simplicity.
 - Move the "ffmpeg" folder to a location like C:\ for easy access.
