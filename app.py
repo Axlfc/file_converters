@@ -2,6 +2,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from data.audio import audio_extensions
+from tkinter import ttk
 
 
 class WavToMp3ConverterApp:
@@ -75,6 +76,16 @@ class WavToMp3ConverterApp:
         self.convert_button = tk.Button(root, text="Convert", command=self.convert_wav)
         self.convert_button.pack()
 
+        style = ttk.Style()
+        style.configure("green.Horizontal.TProgressbar", background="green")
+        self.progress_bar_value = 0
+        self.progress_bar = ttk.Progressbar(self.root, style="green.Horizontal.TProgressbar", orient="horizontal", mode="determinate")
+        self.progress_bar.pack(side=tk.BOTTOM, fill=tk.X, padx=0, pady=0)
+
+    def update_progress_bar(self, value):
+        self.progress_bar["value"] = value
+        self.root.update_idletasks()
+
     def update_labels(self, *args):
         mode = self.mode_var.get()
         extension = self.file_extension_var.get()
@@ -113,9 +124,13 @@ class WavToMp3ConverterApp:
         self.output_path_entry.delete(0, tk.END)
         self.output_path_entry.insert(0, selected_path)
 
-    def convert_to_mp3(self, input_path, output_path):
+    def convert_to_mp3(self, input_path, output_path, progress_callback=None):
         # Convert audio to MP3 using FFmpeg
+        if progress_callback:
+            progress_callback(self.progress_bar_value)
         os.system(f'ffmpeg -y -i "{input_path}" "{output_path}"')
+        if progress_callback:
+            progress_callback(100)
 
     def convert_wav(self):
         mode = self.mode_var.get()
@@ -130,6 +145,8 @@ class WavToMp3ConverterApp:
                     return
 
                 if mode == "single":
+                    self.progress_bar_value = 0
+                    self.update_progress_bar(0)
                     if not output_path:
                         output_path = os.path.splitext(input_path)[0] + f".{self.exclude_var.get()}"
                     elif os.path.isdir(output_path):
@@ -139,10 +156,12 @@ class WavToMp3ConverterApp:
                     print("THE OUTPUT PATH:", output_path)
                     print("THE OUTPUT NAME:", input_path)
                     print("THE OUTPUT EXTENSION:", self.exclude_var.get())
-
-                    self.convert_to_mp3(input_path, output_path)
+                    self.progress_bar_value = 50
+                    self.convert_to_mp3(input_path, output_path, progress_callback=self.update_progress_bar)
                     messagebox.showinfo("Conversion Complete", "Conversion successful!")
                 elif mode == "batch":
+                    self.progress_bar_value = 0
+                    self.update_progress_bar(0)
                     if not output_path:
                         output_path = os.path.join(input_path, "converted_mp3")
                     elif os.path.splitext(output_path)[1]:
@@ -152,13 +171,27 @@ class WavToMp3ConverterApp:
                     if not os.path.exists(output_path):
                         os.makedirs(output_path)
 
+                    files_to_convert = [file for file in os.listdir(input_path) if
+                                        file.lower().endswith(f".{extension}")]
+                    total_files = len(files_to_convert)
+                    progress_increment = round(1 / total_files, 2)  # Calculate the progress increment
+
+                    completed_files = 0
+
                     for root, dirs, files in os.walk(input_path):
                         for file in files:
                             if file.lower().endswith(f".{extension}"):
                                 input_file_path = os.path.join(root, file)
                                 output_file_path = os.path.join(output_path, file)
                                 output_file_path = os.path.splitext(output_file_path)[0] + f".{self.exclude_var.get()}"
-                                self.convert_to_mp3(input_file_path, output_file_path)
+                                self.convert_to_mp3(input_file_path, output_file_path, progress_callback=self.update_progress_bar)
+                                completed_files += 1
+                                progress_value = completed_files * progress_increment * 100
+                                print("PROGRESS INCREMENT VALUE =", progress_value)
+                                self.progress_bar_value = int(progress_value + progress_increment)
+                                print("PROGRESS BAR SELF VALUE=", self.progress_bar_value)
+                                self.update_progress_bar(self.progress_bar_value)
+                    self.update_progress_bar(100)
                     messagebox.showinfo("Batch Conversion Complete", "Batch conversion successful!")
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
@@ -170,4 +203,3 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = WavToMp3ConverterApp(root)
     root.mainloop()
-
