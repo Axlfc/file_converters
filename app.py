@@ -147,15 +147,17 @@ class WavToMp3ConverterApp:
                 if mode == "single":
                     self.progress_bar_value = 0
                     self.update_progress_bar(0)
+
+                    if not os.path.isfile(input_path):
+                        messagebox.showerror("Error", "Input must be a valid file in single mode.")
+                        return
+
                     if not output_path:
                         output_path = os.path.splitext(input_path)[0] + f".{self.exclude_var.get()}"
                     elif os.path.isdir(output_path):
                         output_path = os.path.join(output_path, os.path.splitext(os.path.basename(input_path))[
                             0] + f".{self.exclude_var.get()}")
 
-                    print("THE OUTPUT PATH:", output_path)
-                    print("THE OUTPUT NAME:", input_path)
-                    print("THE OUTPUT EXTENSION:", self.exclude_var.get())
                     self.progress_bar_value = 50
                     self.convert_to_mp3(input_path, output_path, progress_callback=self.update_progress_bar)
                     messagebox.showinfo("Conversion Complete", "Conversion successful!")
