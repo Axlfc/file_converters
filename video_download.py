@@ -12,21 +12,11 @@ def get_playlist_title(url):
     return info.get('title', 'unknown_playlist')
 
 
-def convert_to_mp3(input_path, output_path):
-    # Convert audio to MP3 using FFmpeg
-    os.system(f'ffmpeg -y -i "{input_path}" "{output_path}"')
-
-
 def video_options(format, output_directory):
     return {
         'format': format,
         'outtmpl': f'{output_directory}/%(title)s.%(ext)s',
     }
-
-
-def download_video(url, output_directory=".", format="mp4"):
-    with yt.YoutubeDL(video_options(format, output_directory)) as ydl:
-        ydl.download([url])
 
 
 def audio_options(codec, output_directory):
@@ -41,22 +31,12 @@ def audio_options(codec, output_directory):
     }
 
 
-def download_audio(url, output_directory=".", codec="wav"):
-    with yt.YoutubeDL(audio_options(codec, output_directory)) as ydl:
-        ydl.download([url])
-
-
 def video_playlist_options(codec, output_directory):
     return {
         'yes_playlist': True,
         'format': codec,
         'outtmpl': f'{output_directory}/%(playlist_title)s/%(title)s.%(ext)s',
     }
-
-
-def download_video_playlist(url, output_directory="."):
-    with yt.YoutubeDL(video_playlist_options("mp4", output_directory)) as ydl:
-        ydl.download([url])
 
 
 def audio_playlist_options(codec, output_directory):
@@ -72,23 +52,27 @@ def audio_playlist_options(codec, output_directory):
     }
 
 
+def download_video(url, output_directory=".", format="mp4"):
+    with yt.YoutubeDL(video_options(format, output_directory)) as ydl:
+        ydl.download([url])
+
+
+def download_audio(url, output_directory=".", codec="wav"):
+    with yt.YoutubeDL(audio_options(codec, output_directory)) as ydl:
+        ydl.download([url])
+
+
+def download_video_playlist(url, output_directory="."):
+    with yt.YoutubeDL(video_playlist_options("mp4", output_directory)) as ydl:
+        ydl.download([url])
+
+
 def download_audio_playlist(url, output_directory=".", codec="wav"):
     with yt.YoutubeDL(audio_playlist_options(codec, output_directory)) as ydl:
         ydl.download([url])
 
 
 class VideoDownloadApp:
-    def download_progress_hook(self, d):
-        if d['status'] == 'downloading':
-            if 'downloading item' in d['filename']:
-                progress_info = d['filename'].split('of')
-                if len(progress_info) == 2:
-                    item_number = int(progress_info[0].split()[-1])
-                    total_items = int(progress_info[1].split()[-1])
-                    total_progress = (item_number / total_items) * 100
-                    self.update_progress_bar(total_progress)
-                    self.update_progress()  # Update the progress variable
-
     def download_video_action(self):
         url = self.input_path_entry.get()
         if url:
@@ -112,15 +96,12 @@ class VideoDownloadApp:
                     download_audio_playlist(url, output_directory)
                 else:
                     download_video_playlist(url, output_directory)
-
-            self.update_progress_bar(100)
-            self.update_progress()  # Update the progress variable
         else:
             messagebox.showerror("Error", "Please provide a valid URL.")
 
     def __init__(self, root):
         self.root = root
-        self.root.title("URL Video downloader")
+        self.root.title("URL Media Downloader")
 
         self.input_label_text = tk.StringVar()
         self.input_label_text.set("Input URL:")
@@ -176,15 +157,6 @@ class VideoDownloadApp:
         self.convert_button = tk.Button(root, text="Download", command=self.download_video_action)
         self.convert_button.pack()
 
-        style = ttk.Style()
-        style.configure("green.Horizontal.TProgressbar", background="green")
-        self.progress_bar_value = 0
-        self.progress_bar = ttk.Progressbar(self.root, style="green.Horizontal.TProgressbar", orient="horizontal", mode="determinate")
-        self.progress_bar.pack(side=tk.BOTTOM, fill=tk.X, padx=0, pady=0)
-
-        self.total_files = 0  # Initialize the total number of files
-        self.completed_files = 0  # Initialize the number of completed files
-
     def toggle_mp3_checkbox(self):
         if self.audio_only_var.get():
             self.mp3_checkbox.pack()  # Show the MP3 checkbox when Audio Only is selected
@@ -193,17 +165,6 @@ class VideoDownloadApp:
             self.mp3_checkbox.pack_forget()  # Hide the MP3 checkbox when Audio Only is unselected
             self.mp3_var.set(False)  # Uncheck the MP3 checkbox
             self.mp3_checkbox.config(state=tk.DISABLED)  # Disable the MP3 checkbox
-
-    def update_progress_bar(self, value):
-        self.progress_bar["value"] = value
-        self.root.update_idletasks()
-
-    def update_progress(self):
-        if self.total_files == 0:
-            return 0  # Avoid division by zero
-
-        progress_percentage = (self.completed_files / self.total_files) * 100
-        return progress_percentage
 
     def browse_input(self):
         mode = self.mode_var.get()
