@@ -1,85 +1,107 @@
-# file_converters
+# File Converters
 
+This repository includes an audio file converter application implemented in Python, utilizing the Tkinter library for the graphical user interface and FFmpeg for audio conversion.
 
-# Installing FFmpeg on Different Platforms
+## Features
 
-FFmpeg is a versatile multimedia framework that allows you to process, convert, and manipulate audio and video files. This guide will walk you through the installation process for FFmpeg on various platforms, including GNU/Linux, Windows, and macOS. It will also cover setting up the PATH variable to ensure easy access to FFmpeg from the command line.
+- **Graphical User Interface (GUI):**
+  - Simple and interactive GUI for easy navigation.
+  - Supports both single-file and batch conversion modes.
 
-## Table of Contents
-1. [GNU/Linux](#gnu-linux)
-2. [Windows](#windows)
-   - [Using winget](#using-winget)
-   - [Using Chocolatey](#using-chocolatey)
-   - [Using Binaries](#using-binaries)
-   - [Setting up PATH Variable](#setting-up-path-variable)
-3. [macOS](#macos)
+- **Audio Conversion:**
+  - Converts WAV files to MP3 format using FFmpeg.
+  - Choose the desired file extension and output format.
 
-## GNU/Linux <a name="gnu-linux"></a>
+- **Cross-Platform Compatibility:**
+  - Instructions for installing FFmpeg on GNU/Linux, Windows, and macOS included in this README.
+
+## Installation
+
+### Installing FFmpeg
+
+#### GNU/Linux
+
 On most GNU/Linux distributions, FFmpeg can be installed using the package manager.
 
-### Ubuntu/Debian
-```bash
-sudo apt-get update
-sudo apt-get install ffmpeg
-```
-### Fedora
-```bash
-sudo dnf install ffmpeg
-```
+- **Ubuntu/Debian:**
+  ```bash
+  sudo apt-get update
+  sudo apt-get install ffmpeg
+  ```
+- **Fedora:**
+  ```bash
+  sudo dnf install ffmpeg
+  ```
+- **CentOS:**
+  ```bash
+  sudo yum install ffmpeg
+  ```
 
-### CentOS
-```bash
-sudo yum install ffmpeg
-```
+#### Windows
 
-## Windows <a name="windows"></a>
-### Using winget <a name="using-winget"></a>
-
-winget is a built-in package manager for Windows.
-
+##### Using winget
 ```powershell
 winget install FFmpeg.FFmpeg
 ```
-### Using Chocolatey <a name="using-chocolatey"></a>
 
-Chocolatey is a popular third-party package manager for Windows.
-
+##### Using Chocolatey
 ```powershell
 choco install ffmpeg
 ```
-### Using Binaries <a name="using-binaries"></a>
 
+##### Using Binaries
 - Visit the [FFmpeg Download page](https://ffmpeg.org/download.html) and download the suitable static build for Windows.
-- Extract the downloaded archive.
-- Rename the extracted folder to "ffmpeg" for simplicity.
-- Move the "ffmpeg" folder to a location like C:\ for easy access.
+- Extract the downloaded archive, rename the folder to "ffmpeg," and move it to a convenient location like C:\.
 
-### Setting up PATH Variable <a name="setting-up-path-variable"></a>
+##### Setting up PATH Variable
+- Add the path to the "bin" folder within the "ffmpeg" directory to the PATH environment variable.
+- Open a new PowerShell window to use the ffmpeg command.
 
-To make FFmpeg accessible from PowerShell, you need to add its location to the PATH environment variable.
+#### macOS
 
-- Open the Start Menu, search for "Environment Variables," and select "Edit the system environment variables."
-- Click the "Environment Variables" button.
-- In the "System Variables" section, select the "Path" variable and click "Edit."
-- Click "New" and add the path to the "bin" folder within the "ffmpeg" directory (e.g., C:\ffmpeg\bin).
-- Click "OK" to close the windows.
-- Open a new PowerShell window, and you should be able to use the ffmpeg command.
+Use Homebrew for macOS installation.
 
-## macOS <a name="macos"></a>
+1. Install Homebrew:
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+2. Install FFmpeg:
+   ```bash
+   brew install ffmpeg
+   ```
 
-The easiest way to install FFmpeg on macOS is by using the Homebrew package manager.
+## Usage
 
-### Install Homebrew if you haven't already:
+1. **Select File Extension:**
+   - Choose the desired file extension for conversion (e.g., WAV).
 
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-````
-### Install FFmpeg using Homebrew:
+2. **Select Conversion Mode:**
+   - Choose between single-file and batch conversion modes.
 
-```bash
-brew install ffmpeg
-```
+3. **Input WAV File:**
+   - Specify the input WAV file or folder containing WAV files.
+
+4. **Convert to MP3:**
+   - Choose the desired output format for conversion (e.g., MP3).
+
+5. **Output MP3 File/Folder:**
+   - Specify the output path for the converted files.
+
+6. **Convert:**
+   - Click the "Convert" button to initiate the conversion process.
+
+7. **Progress Bar:**
+   - Monitor the progress of the conversion with the progress bar.
+
+## Contributing
+
+Contributions are welcome! If you have ideas for improvements or new features, feel free to open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Conclusion
 
 Following the steps outlined in this guide, you should now have FFmpeg successfully installed on your preferred operating system, whether it's GNU/Linux, Windows, or macOS. You can use FFmpeg's powerful features to manipulate audio and video files as needed.
+
