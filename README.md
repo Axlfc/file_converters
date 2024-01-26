@@ -97,10 +97,6 @@ Use Homebrew for macOS installation.
 
 Contributions are welcome! If you have ideas for improvements or new features, feel free to open an issue or submit a pull request.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Conclusion
 
 Following the steps outlined in this guide, you should now have FFmpeg successfully installed on your preferred operating system, whether it's GNU/Linux, Windows, or macOS. You can use FFmpeg's powerful features to manipulate audio and video files as needed.
